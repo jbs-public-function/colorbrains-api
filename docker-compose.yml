@@ -7,13 +7,8 @@ services:
             dockerfile: Dockerfile
         ports:
             - 8000:8000
-        environment:
-            - POSTGRES_USER=colorbrains
-            - POSTGRES_PASSWORD=colorbrains
-            - POSTGRES_DB=colorbrains
-            - POSTGRES_PORT=5432
-            - POSTGRES_HOST=localhost
-    
+        env_file:
+            - ./.env
     postgres:
         container_name: postgres
         restart: unless-stopped
@@ -21,11 +16,7 @@ services:
         volumes:
             - ./colorbrains_api/sql/:/docker-entrypoint-initdb.d/
             # - ./postgres-data:/var/lib/postgresql/data
-        environment:
-            - POSTGRES_USER=colorbrains
-            - POSTGRES_PASSWORD=colorbrains
-            - POSTGRES_DB=colorbrains
-            - POSTGRES_PORT=5432
-            - POSTGRES_HOST=localhost
         ports:
             - 5432:5432
+        env_file:
+            - ./.env
