@@ -1,4 +1,6 @@
 # colorbrains-api
+An Api To Serve Color Information For A Machine Learning Project On Colors.
+
 
 ```
 #### run the fastapi service
