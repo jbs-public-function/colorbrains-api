@@ -15,8 +15,8 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/")
-def read_root():
+@app.get("/read")
+def read_root2():
     return {"Hello": "World"}
 
 

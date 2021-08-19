@@ -7,7 +7,7 @@ CREATE SCHEMA IF NOT EXISTS matplotlib;
 
 -- create table for basecolors
 CREATE TABLE IF NOT EXISTS matplotlib.basecolors (
-    color_name VARCHAR[1] PRIMARY KEY,
+    color_name VARCHAR[5] PRIMARY KEY,
     red FLOAT NOT NULL CHECK (red >= 0 AND red <=1),
     green FLOAT NOT NULL CHECK (green >= 0 AND green <=1),
     blue FLOAT NOT NULL CHECK (blue >= 0 AND blue <=1)
