@@ -5,7 +5,7 @@ services:
         image: postgres:latest
         volumes:
             - ./colorbrains_api/sql/:/docker-entrypoint-initdb.d/
-            # - ./postgres-data:/var/lib/postgresql/data
+            # - ./postgres-data:/var/lib/postgresql/data # uncomment this line to make data persistent
         ports:
             - 5432:5432
         env_file:
@@ -19,5 +19,5 @@ services:
             - 80:80
         env_file:
             - ./.env
-        command: "/app/scripts/launch-and-populate-data.sh"
+        command: "./colorbrains_api/scripts/launch-and-populate-data.sh"
         entrypoint: ['bash', '-c']
