@@ -19,5 +19,7 @@ services:
             - 80:80
         env_file:
             - ./.env
+        environment:
+            - POSTGRES_HOST=postgres
         command: "./colorbrains_api/scripts/launch-and-populate-data.sh"
         entrypoint: ['bash', '-c']
