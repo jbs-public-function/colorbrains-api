@@ -2,13 +2,14 @@ from typing import Optional
 
 from fastapi import FastAPI
 
-
-from colorbrains_api import create_data
 from colorbrains_api.db_assistant import DbAssistant
 
 
 app = FastAPI()
 
+"""
+@todo - flesh out endpoints
+"""
 
 @app.get("/")
 def read_root():
