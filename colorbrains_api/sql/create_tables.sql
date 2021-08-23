@@ -18,9 +18,11 @@ CREATE TABLE IF NOT EXISTS matplotlib.basecolors (
 -- effectively labeled data
 -- if a colormap has 22 colors `cmap_n_total` will be 22 
 CREATE TABLE IF NOT EXISTS matplotlib.categorizedcolormaps (
-    categorical_name TEXT UNIQUE NOT NULL PRIMARY KEY,
+    categorical_name TEXT NOT NULL,
     colormap_name TEXT UNIQUE NOT NULL,
-    cmap_n_total INT NOT NULL
+    cmap_n_total INT NOT NULL,
+
+    PRIMARY KEY  (categorical_name, colormap_name)
 );
 
 
