@@ -1,5 +1,14 @@
+# compiled files
 *.pyc
+
+# do not upload these lmao
 *.env
+
+# notebooks. I prefer to force add them if I want them in my repo
 *.ipynb
-*.DS*
+
+# Mac Os crap lol
+*.DS* 
+
+# setup files
 *.egg*

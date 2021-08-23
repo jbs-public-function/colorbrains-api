@@ -7,7 +7,7 @@ CREATE SCHEMA IF NOT EXISTS matplotlib;
 
 -- create table for basecolors
 CREATE TABLE IF NOT EXISTS matplotlib.basecolors (
-    color_name VARCHAR[5] PRIMARY KEY,
+    color_name TEXT PRIMARY KEY,
     red FLOAT NOT NULL CHECK (red >= 0 AND red <=1),
     green FLOAT NOT NULL CHECK (green >= 0 AND green <=1),
     blue FLOAT NOT NULL CHECK (blue >= 0 AND blue <=1)
@@ -18,9 +18,11 @@ CREATE TABLE IF NOT EXISTS matplotlib.basecolors (
 -- effectively labeled data
 -- if a colormap has 22 colors `cmap_n_total` will be 22 
 CREATE TABLE IF NOT EXISTS matplotlib.categorizedcolormaps (
-    categorical_name VARCHAR[30] UNIQUE NOT NULL PRIMARY KEY,
-    colormap_name VARCHAR[20] UNIQUE NOT NULL,
-    cmap_n_total INT NOT NULL
+    categorical_name TEXT NOT NULL,
+    colormap_name TEXT UNIQUE NOT NULL,
+    cmap_n_total INT NOT NULL,
+
+    PRIMARY KEY  (categorical_name, colormap_name)
 );
 
 
@@ -29,7 +31,7 @@ CREATE TABLE IF NOT EXISTS matplotlib.categorizedcolormaps (
 -- cmap_n_observation will be 1..22
 -- references above table: matplotlib.categorizedcolormaps
 CREATE TABLE IF NOT EXISTS matplotlib.colormaps (
-    colormap_name VARCHAR[20] NOT NULL,
+    colormap_name TEXT NOT NULL,
     
     cmap_n_observation INT NOT NULL, 
 
@@ -44,7 +46,7 @@ CREATE TABLE IF NOT EXISTS matplotlib.colormaps (
 
 -- create table for named colors
 CREATE TABLE IF NOT EXISTS matplotlib.namedcolors (
-    color_name varchar[20] NOT NULL PRIMARY KEY,
+    color_name TEXT NOT NULL PRIMARY KEY,
     red float NOT NULL CHECK (red >= 0 AND red <=1),
     green float NOT NULL CHECK (green >= 0 AND green <=1),
     blue float NOT NULL CHECK (blue >= 0 AND blue <=1)

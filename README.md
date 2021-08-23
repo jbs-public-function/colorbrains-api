@@ -3,10 +3,7 @@ An Api To Serve Color Information For A Machine Learning Project On Colors.
 
 
 ```
-#### run the fastapi service
-docker-compose run -d -p 80:80 colorbrains-api
-
-#### startup the DB
+#### Initialize & Populate DB And Start FastApi Service
 docker-compose up
 
 #### localhost DB instance

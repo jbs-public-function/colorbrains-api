@@ -1,22 +1,25 @@
 version: "3.9"
 services:
-    colorbrains-api:
-        restart: unless-stopped
-        build:
-            context: .
-            dockerfile: Dockerfile
-        ports:
-            - 8000:8000
-        env_file:
-            - ./.env
     postgres:
         container_name: postgres
-        restart: unless-stopped
         image: postgres:latest
         volumes:
             - ./colorbrains_api/sql/:/docker-entrypoint-initdb.d/
-            # - ./postgres-data:/var/lib/postgresql/data
+            # - ./postgres-data:/var/lib/postgresql/data # uncomment this line to make data persistent
         ports:
             - 5432:5432
         env_file:
             - ./.env
+    colorbrains-api:
+        restart: on-failure
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - 80:80
+        env_file:
+            - ./.env
+        environment:
+            - POSTGRES_HOST=postgres
+        command: "./colorbrains_api/scripts/launch-and-populate-data.sh"
+        entrypoint: ['bash', '-c']
