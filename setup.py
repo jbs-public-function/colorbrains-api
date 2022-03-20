@@ -45,7 +45,7 @@ setup(
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
-    py_modules=['colorbrains'],
+    py_modules=['colorbrains_api'],
     install_requires=read_requirements(),
     include_package_data=True,
     license=read_file_as_txt('LICENSE', LICENSE),
