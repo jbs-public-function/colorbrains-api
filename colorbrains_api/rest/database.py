@@ -27,7 +27,7 @@ def compose_insert_sql(
     )
 
 
-def _compose_helper(sql_clause: str, clause_equivalency: str) -> psycopg2.sql.Composed:
+def _compose_where_helper(sql_clause: str, clause_equivalency: str) -> psycopg2.sql.Composed:
     valid_equivalencys = ["=", "<", ">", "<=", ">=", "<>"]
     if clause_equivalency not in valid_equivalencys:
         raise Exception(f"Invalid clause_equivalency value given '{clause_equivalency}' not in '{valid_equivalencys}'")
@@ -47,8 +47,8 @@ def _compose_where_statement(
     composable_ands = None
     composable_ors = None
 
-    _composable_ands = [_compose_helper(clause, equivalency) for (clause, equivalency) in where_and_clause]
-    _composable_ors = [_compose_helper(clause, equivalency) for (clause, equivalency) in where_or_clause]
+    _composable_ands = [_compose_where_helper(clause, equivalency) for (clause, equivalency) in where_and_clause]
+    _composable_ors = [_compose_where_helper(clause, equivalency) for (clause, equivalency) in where_or_clause]
 
     if len(_composable_ands) > 0:
         composable_ands = sql.SQL(" AND ").join(_composable_ands)
