@@ -4,7 +4,8 @@ from fastapi import FastAPI
 from fastapi import Security
 
 from .auth import get_api_key
-from .database import engine
+from .models import insert_into_namedcolors, insert_into_categorizedcolormaps
+from .schemas import NamedColors, CategorizedColorMaps, ManyNamedColors
 
 
 app = FastAPI(
@@ -19,17 +20,19 @@ def root():
     return {"status": "🌈"}
 
 
-@app.get('/test-create-engine')
-def test_create_engine():
-    engine
+@app.post('/matplotlib/named-colors/')
+def insert_named_colors(named_colors: NamedColors):
+    msg = insert_into_namedcolors(namedcolors_schemas=[named_colors])
     return {"status": "🌈"}
 
 
-@app.get('/another-test')
-def another_test():
-    try:
-        with engine.connect():
-            return {"status": "Connected!"}
-    except Exception as exc:
-        print(exc)
-    return {'status': 'hi'}
+@app.post('/matplotlib/named-colors/many/')
+def insert_many_named_colors(named_colors: ManyNamedColors):
+    msg = insert_into_namedcolors(namedcolors_schemas=named_colors.named_colors)
+    return {"status": "🌈"}
+
+
+@app.post('/matplotlib/categorized-colormaps/')
+def insert_named_categorized_colormaps(categorized_colormaps: CategorizedColorMaps):
+    msg = insert_into_categorizedcolormaps(categorized_colormaps=categorized_colormaps)
+    return {"status": "🌈"}

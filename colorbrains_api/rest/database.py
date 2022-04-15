@@ -11,7 +11,7 @@ def database_connection(func):
     def decorated(*args, **kwargs):
         with psycopg2.connect(os.environ["COLORBRAINS_CONN_STRING"]) as conn:
             cursor = conn.cursor()
-            return decorated(cursor, *args, **kwargs)
+            return func(cursor, *args, **kwargs)
     return decorated
 
 

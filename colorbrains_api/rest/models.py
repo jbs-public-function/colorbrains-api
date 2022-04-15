@@ -2,72 +2,49 @@ from typing import *
 
 
 from .database import database_connection, compose_insert_sql, compose_select_sql
-from .schemas import NamedColors, CategorizedColorMaps, ColorMaps
+from psycopg2.extras import execute_batch
+from .schemas import CategorizedColorMapsMeta, NamedColors, CategorizedColorMaps, ColorMaps
+
+
+def _insert_into_namedcolors(cursor, namedcolors_schema: NamedColors):
+    schema_keys = list(namedcolors_schema.schema()['properties'].keys())
+    query = compose_insert_sql(namedcolors_schema.schemaname, namedcolors_schema.tablename, schema_keys)
+    values = tuple([getattr(namedcolors_schema, key) for key in schema_keys])
+    cursor.execute(query, values)
 
 
 @database_connection
-def insert_into_namedcolors(cursor, namedcolors_schema: NamedColors):
-    query = compose_insert_sql("matplotlib", "namedcolors", list(namedcolors_schema.schema()['properties'].keys()))
-    values = tuple(namedcolors_schema.color_name, namedcolors_schema.red, namedcolors_schema.green, namedcolors_schema.blue)
-    return cursor.execute(query, (values, ))
-
-
-@database_connection
-def insertmany_into_namedcolors(cursor, namedcolors_schemas: List[NamedColors]):
+def insert_into_namedcolors(cursor, namedcolors_schemas: List[NamedColors]):
     if len(namedcolors_schemas) <= 1:
-        return insert_into_namedcolors(cursor, namedcolors_schemas[0])
+        return _insert_into_namedcolors(cursor, namedcolors_schemas[0])
 
-    query = compose_insert_sql("matplotlib", "namedcolors", list(namedcolors_schemas[0].schema()['properties'].keys()))
-    values = tuple([tuple(namedcolors_schema.color_name, namedcolors_schema.red, namedcolors_schema.green, namedcolors_schema.blue) for namedcolors_schema in namedcolors_schemas])
+    schema_keys = list(namedcolors_schemas[0].schema()['properties'].keys())
+    query = compose_insert_sql(namedcolors_schemas[0].schemaname, namedcolors_schemas[0].tablename, schema_keys)
+    values = tuple([tuple([getattr(namedcolors_schema, key) for key in schema_keys]) for namedcolors_schema in namedcolors_schemas])
     
-    return cursor.executemany(query, values)
+    execute_batch(cursor, query, values)
 
 
 @database_connection
-def insert_into_categorizedcolormaps(cursor, categorized_colormap_meta: CategorizedColorMaps, colormaps: List[ColorMaps]):
-    meta_query = compose_insert_sql("matplotlib", "categorizedcolormaps", list(categorized_colormap_meta.schema()['properties'].keys()))
-    meta_values = tuple(categorized_colormap_meta.categorical_name, categorized_colormap_meta.colormap_name, categorized_colormap_meta.cmap_n_total)
-    cursor.execute(meta_query, (meta_values, ))
+def insert_into_categorizedcolormaps(cursor, categorized_colormaps: CategorizedColorMaps):
+    cmaps = categorized_colormaps.colormaps
 
-    colormaps_query = compose_insert_sql("matplotlib", "colormaps", list(colormaps[0].schema()['properties'].keys()))
+    categorized_colormap_meta = CategorizedColorMapsMeta(
+        categorical_name=categorized_colormaps.categorical_name,
+        colormap_name=categorized_colormaps.colormap_name,
+        cmap_n_total=len(cmaps)
+    )
 
+    colormaps = [ColorMaps(colormap_name=categorized_colormaps.colormap_name, red=cmap.red, blue=cmap.blue, green=cmap.green, cmap_n_observation=idx) for (idx, cmap) in enumerate(cmaps)]
 
-"""
--- create table for reference `color category` -> `colormap`
--- effectively labeled data
--- if a colormap has 22 colors `cmap_n_total` will be 22 
-CREATE TABLE IF NOT EXISTS matplotlib.categorizedcolormaps (
-    categorical_name TEXT NOT NULL,
-    colormap_name TEXT UNIQUE NOT NULL,
-    cmap_n_total INT NOT NULL,
-
-    PRIMARY KEY  (categorical_name, colormap_name)
-);
+    meta_schema_keys = list(categorized_colormap_meta.schema()['properties'].keys())
+    meta_query = compose_insert_sql(categorized_colormap_meta.schemaname, categorized_colormap_meta.tablename, meta_schema_keys)
+    meta_values = tuple([getattr(categorized_colormap_meta, key) for key in meta_schema_keys])
+    cursor.execute(meta_query, meta_values)
 
 
--- create table for colormaps
--- if a colormap has 22 colors `cmap_n_total` will be 22 
--- cmap_n_observation will be 1..22
--- references above table: matplotlib.categorizedcolormaps
-CREATE TABLE IF NOT EXISTS matplotlib.colormaps (
-    colormap_name TEXT NOT NULL,
-    
-    cmap_n_observation INT NOT NULL, 
+    cmaps_schema_keys = list(colormaps[0].schema()['properties'].keys())
+    colormaps_query = compose_insert_sql(colormaps[0].schemaname, colormaps[0].tablename, cmaps_schema_keys)
+    colormaps_values = tuple([tuple([getattr(colormap, key) for key in cmaps_schema_keys]) for colormap in colormaps])
 
-    red FLOAT NOT NULL CHECK (red >= 0 AND red <=1),
-    green FLOAT NOT NULL CHECK (green >= 0 AND green <=1),
-    blue FLOAT NOT NULL CHECK (blue >= 0 AND blue <=1),
-    
-    PRIMARY KEY (colormap_name, cmap_n_observation),
-    FOREIGN KEY (colormap_name) REFERENCES matplotlib.categorizedcolormaps (colormap_name)
-);
-
-
--- create table for named colors
-CREATE TABLE IF NOT EXISTS matplotlib.namedcolors (
-    color_name TEXT NOT NULL PRIMARY KEY,
-    red float NOT NULL CHECK (red >= 0 AND red <=1),
-    green float NOT NULL CHECK (green >= 0 AND green <=1),
-    blue float NOT NULL CHECK (blue >= 0 AND blue <=1)
-);
-"""
+    execute_batch(cursor, colormaps_query, colormaps_values)

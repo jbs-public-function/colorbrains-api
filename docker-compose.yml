@@ -1,6 +1,7 @@
 version: "3.9"
 services:
     colorbrains-api:
+        restart: always
         build:
             context: .
             dockerfile: Dockerfile
