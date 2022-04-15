@@ -7,8 +7,11 @@
 # notebooks. I prefer to force add them if I want them in my repo
 *.ipynb
 
-# Mac Os crap lol
+# Mac OS junk lol
 *.DS* 
 
 # setup files
 *.egg*
+
+# project specific
+tmp/

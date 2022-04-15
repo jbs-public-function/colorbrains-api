@@ -1,25 +1,17 @@
 version: "3.9"
 services:
-    postgres:
-        container_name: postgres
-        image: postgres:latest
-        volumes:
-            - ./colorbrains_api/sql/:/docker-entrypoint-initdb.d/
-            # - ./postgres-data:/var/lib/postgresql/data # uncomment this line to make data persistent
-        ports:
-            - 5432:5432
-        env_file:
-            - ./.env
     colorbrains-api:
-        restart: on-failure
+        restart: always
         build:
             context: .
             dockerfile: Dockerfile
         ports:
             - 80:80
-        env_file:
-            - ./.env
+        volumes:
+        - ./colorbrains_api:/app/colorbrains_api/
         environment:
-            - POSTGRES_HOST=postgres
-        command: "./colorbrains_api/scripts/launch-and-populate-data.sh"
-        entrypoint: ['bash', '-c']
+            COLORBRAINS_CONN_STRING: ${COLORBRAINS_CONN_STRING:-postgresql://colorbrains:colorbrains@host.docker.internal:5450/colorbrains}
+            X_API_KEY: ${COLORBRAINS_X_API_KEY:-xyz}
+
+
+# https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach
