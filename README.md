@@ -13,9 +13,8 @@ http://0.0.0.0:80/docs
 ### Postgres Database to support Colorbrains API work.
 
 `docker-compose up colorbrains-db`
- 
-### Connect to postgres database
 
+### Connect to postgres database
 #### Via host machine command line
 
 `psql -h localhost -U colorbrains -W colorbrains -p 5450`
