@@ -22,17 +22,26 @@ def root():
 
 @app.post('/matplotlib/named-colors/')
 def insert_named_colors(named_colors: NamedColors):
-    msg = insert_into_namedcolors(namedcolors_schemas=[named_colors])
-    return {"status": "🌈"}
+    try:
+        msg = insert_into_namedcolors(namedcolors_schemas=[named_colors])
+    except Exception as exc:
+        return {"status": str(exc)}
+    return {"status": "200"}
 
 
 @app.post('/matplotlib/named-colors/many/')
 def insert_many_named_colors(named_colors: ManyNamedColors):
-    msg = insert_into_namedcolors(namedcolors_schemas=named_colors.named_colors)
-    return {"status": "🌈"}
+    try:
+        msg = insert_into_namedcolors(namedcolors_schemas=named_colors.named_colors)
+    except Exception as exc:
+        return {"status": str(exc)}
+    return {"status": "200"}
 
 
 @app.post('/matplotlib/categorized-colormaps/')
 def insert_named_categorized_colormaps(categorized_colormaps: CategorizedColorMaps):
-    msg = insert_into_categorizedcolormaps(categorized_colormaps=categorized_colormaps)
-    return {"status": "🌈"}
+    try:
+        msg = insert_into_categorizedcolormaps(categorized_colormaps=categorized_colormaps)
+    except Exception as exc:
+        return {"status": str(exc)}
+    return {"status": "200"}

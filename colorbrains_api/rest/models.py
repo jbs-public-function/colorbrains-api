@@ -48,3 +48,8 @@ def insert_into_categorizedcolormaps(cursor, categorized_colormaps: CategorizedC
     colormaps_values = tuple([tuple([getattr(colormap, key) for key in cmaps_schema_keys]) for colormap in colormaps])
 
     execute_batch(cursor, colormaps_query, colormaps_values)
+
+
+@database_connection
+def get_data(cursor, field_names: List[str], schema_name: str, table_name: str, where_and_clause: List[Tuple[str, str]]):
+    ...

@@ -1,20 +1,26 @@
 # colorbrains-api
 An Api To Serve Color Information For A Machine Learning Project On Colors.
 
+# colorbrains-db
 
-```
-#### Initialize & Populate DB And Start FastApi Service
-docker-compose up
+### Postgres Database to support Colorbrains API work.
 
-#### localhost DB instance
-psql -h localhost -U colorbrains -W colorbrains -p 5432
+`docker-compose up`
+
+### Connect to postgres database
+
+#### Via Running Container
+
+`$> docker ps`
+```
+CONTAINER ID   IMAGE             COMMAND                  CREATED              STATUS              PORTS                    NAMES
+{container id}   postgres:latest   "docker-entrypoint.s…"   About a minute ago   Up About a minute   0.0.0.0:5450->5432/tcp   colorbrains-db
 ```
 
-### .env file
-```
-export POSTGRES_USER={colorbrains-user}
-export POSTGRES_PASSWORD={colorbrains-userpassword}
-export POSTGRES_DB={colorbrains-dbname}
-export POSTGRES_PORT={colorbrains-dbport}
-export POSTGRES_HOST={colorbrains-dbhost}
-```
+`docker exec -it {container id} /bin/bash`
+
+`$> psql -U colorbrains`
+
+#### Via host machine command line
+
+`psql -h localhost -U colorbrains -W colorbrains -p 5450`
