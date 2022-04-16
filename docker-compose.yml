@@ -12,6 +12,17 @@ services:
         environment:
             COLORBRAINS_CONN_STRING: ${COLORBRAINS_CONN_STRING:-postgresql://colorbrains:colorbrains@host.docker.internal:5450/colorbrains}
             X_API_KEY: ${COLORBRAINS_X_API_KEY:-xyz}
-
+    colorbrains-db:
+        container_name: colorbrains-db
+        image: postgres:latest
+        restart: always
+        volumes:
+          - ./colorbrains-db/sql/:/docker-entrypoint-initdb.d/
+        ports:
+          - 5450:5432
+        environment:
+          POSTGRES_USER: ${COLORBRAINS_DB_USER:-colorbrains}
+          POSTGRES_PASSWORD: ${COLORBRAINS_DB_PASSWORD:-colorbrains}
+          POSTGRES_DB: ${COLORBRAINS_DB:-colorbrains}
 
 # https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach
